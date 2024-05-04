@@ -1,0 +1,18 @@
+
+Flask
+# h5py
+# jupyterlab
+keras
+matplotlib
+numpy
+opencv-python
+pandas
+scikit-learn
+seaborn
+tensorboard
+tensorboard-data-server
+tensorflow
+tensorflow-macos
+tqdm
+flask-cors
+gunicorn
