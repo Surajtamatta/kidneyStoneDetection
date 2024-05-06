@@ -36,7 +36,7 @@ const LabtestCards = () => {
   const [isprecaution,setIsprecaution] = useState<boolean >(false)
   const showModal = (index:number) => {
     setSelectedItem(index)
-    setIsModalOpen(true);
+    setIsModalOpen(!isModalOpen);
   };
   
   const handleCancel = () => {
@@ -44,8 +44,8 @@ const LabtestCards = () => {
     setSelectedItem(null)
   };
   const showPrecautions = () => {
-    setIsprecaution(true)
-    setIsModalOpen(true);
+    setIsprecaution(!isprecaution)
+
   };
  
   return (
@@ -97,7 +97,7 @@ const LabtestCards = () => {
                 </Modal>
                 }
                 {isprecaution &&
-                <Modal title={'Precautions'}  open={isModalOpen} footer={false} onCancel={handleCancel} centered  width="auto"  >
+                <Modal title={'Precautions'}  open={isprecaution} footer={false} onCancel={showPrecautions} centered  width="auto"  >
                     <Precautions/>
                 </Modal>
                 }

@@ -72,6 +72,33 @@ def preprocessImage(images):
 
 
 
+
+def ensemble_predict(cnn_model, svm_model, decision_tree_model, X):
+    def cnn_function():
+        yhat = cnn_model.predict(np.expand_dims(X, 0))
+        return np.argmax(yhat[0])
+
+    def svm_function():
+        X_img = X.reshape(1, -1)
+        yhat = svm_model.predict(X_img)
+        return yhat[0]
+
+    def decision_function():
+        X_img = X.reshape(1, -1)
+        yhat = decision_model.predict(X_img)
+        return yhat[0]
+
+    cnn_pred = cnn_function()
+    svm_pred = svm_function()
+    dt_pred = decision_function()
+
+    print(cnn_pred, svm_pred, dt_pred)
+
+    # Combine predictions
+    ensemble_pred = max(set([cnn_pred, svm_pred, dt_pred]), key=[cnn_pred, svm_pred, dt_pred].count)
+    return ensemble_pred
+
+
 def Classification(filename):
     img_decoded = decoder(filename)
     img_rgb = cv2.cvtColor(img_decoded, cv2.COLOR_BGR2RGB)
@@ -79,10 +106,13 @@ def Classification(filename):
     normalized_img = resized_img / 255.0
     class_labels = ['Cyst', 'Normal', 'Stone', 'Tumor']  
     cnn_predict = cnn_model.predict(np.expand_dims(normalized_img, 0))
-    svm_predict =svm_model.predict(normalized_img.reshape(1, -1))
-    decision_predict =decision_model.predict(normalized_img.reshape(1, -1))
-    predicted_class_index = np.argmax(cnn_predict)
-    predicted_label = class_labels[predicted_class_index]
+    # svm_predict =svm_model.predict(normalized_img.reshape(1, -1))[0]
+    # decision_predict =decision_model.predict(normalized_img.reshape(1, -1))[0]
+    predicted_class_index = np.argmax(cnn_predict[0])
+    
+    ensemble_prediction = ensemble_predict(cnn_model, svm_model, decision_model, normalized_img)
+
+    predicted_label = class_labels[ensemble_prediction]
     return predicted_label
 
 def allowed_file(filename):

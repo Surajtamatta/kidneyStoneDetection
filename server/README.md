@@ -1,6 +1,6 @@
-# kidneyStoneDetection
 
-### Boston House Pricing Prediction
+
+### Kidney stone detection Prediction
 
 ### Software And Tools Requirements
 

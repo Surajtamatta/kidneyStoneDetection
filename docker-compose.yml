@@ -1,0 +1,26 @@
+services:
+  flask-app:
+    build:
+      context: ./server
+      dockerfile: flask.dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./server:/usr/src/app
+    environment:
+      FLASK_ENV: production
+      UPLOAD_FOLDER: /usr/src/app/images
+      ALLOWED_EXTENSIONS: png,jpg,jpeg
+      DATABASE_URI: sqlite:///database.db
+
+  next-app:
+    build:
+      context: ./client
+      dockerfile: next.dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/usr/src/app
+    environment:
+      NODE_ENV: production
+

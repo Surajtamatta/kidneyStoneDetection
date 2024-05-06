@@ -1,18 +1,17 @@
 
-Flask
-# h5py
+Flask==3.0.3
+flask-cors== 4.0.0
+h5py==3.10.0
 # jupyterlab
-keras
-matplotlib
-numpy
-opencv-python
-pandas
-scikit-learn
-seaborn
-tensorboard
-tensorboard-data-server
-tensorflow
-tensorflow-macos
-tqdm
-flask-cors
+keras==3.3.3
+# matplotlib
+numpy==1.26.4
+opencv-python==4.9.0.80
+# pandas
+scikit-learn== 1.4.2
+# seaborn
+tensorflow==2.16.1
+# tqdm
+
 gunicorn
+werkzeug==3.0.2

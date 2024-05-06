@@ -44,23 +44,13 @@ const Sidebar= () => {
               <Text iswidth={boxWidth}>Home</Text>
             </List>
             <List>
-            <StyleIcon><RiHeart3Line/></StyleIcon>
-              <Text iswidth={boxWidth}>Wishlist</Text>
-            </List>
-            <List>
             <StyleIcon><HiOutlineClock/></StyleIcon>
               <Text iswidth={boxWidth}>History</Text>
             </List>
-            <List>
-            <StyleIcon><IoWalletOutline/></StyleIcon>
-              <Text iswidth={boxWidth}>Wallet</Text>
-            </List>
+        
+
             <Title >Others</Title>
          
-            <List>
-            <StyleIcon><RiCoupon3Line/></StyleIcon>
-              <Text iswidth={boxWidth}>Promotion</Text>
-            </List>
 
             <List>
             <StyleIcon><IoPersonCircleOutline/></StyleIcon>

@@ -25,10 +25,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from '../../utils/validation/registration';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
   type RegisterFormInputs = {
     email: string;
     password: string;
@@ -70,8 +72,9 @@ const Login = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log('successfully register', data);
         alert('successfully register');
+        router.push('login');
+
         reset(); 
       } else {
         throw new Error(response.statusText);
