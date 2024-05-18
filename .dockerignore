@@ -2,9 +2,9 @@
 **/.classpath
 **/.dockerignore
 **/.dockerignore
-**/.env
-**/.venv
-**/.git
+.env
+.venv
+.git
 **/.gitignore
 **/.project
 **/.settings
@@ -19,9 +19,13 @@
 **/compose*
 **/Dockerfile*
 **/node_modules
+**/.next
 **/npm-debug.log
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+venv
+.next
+node_modules
 LICENSE
 README.md

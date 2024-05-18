@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { MainContainer,BackButton, Wrapper, Content, WelcomeText, Form, InputContainer, Input, Errors, ButtonContainer, Button, TextContent, Text, LoginWith, HorizontalRule, LinksContainer, Social, Links, ForgotPassword } from '../../styles/pages/Login';
 import { LoginData } from "../../data/LoginData";
 import { useForm } from "react-hook-form";
@@ -16,7 +16,7 @@ const Login = () => {
     password: string;
   };
 
-  const [loading, setLoading] = useState(false);
+ 
   const {  setLoginState } = useLogin();
   const router = useRouter();
 
@@ -37,7 +37,7 @@ const Login = () => {
     };
 
     try {
-      setLoading(true);
+    
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
@@ -47,20 +47,26 @@ const Login = () => {
       });
       if (response.ok) {
         const userData = await response.json();
-        setLoginState({ isLoggedIn: true, userData }); // Update login state with isLogin true and user data
-        alert('Successfully logged in');
-        reset(); // Reset the form after successful login
-        router.push('/'); // Redirect to the index page
+        if (userData.success === true){
+          setLoginState({ isLoggedIn: true, userData });
+          alert(userData?.message);
+          reset(); 
+          router.push('/'); 
+        }
+        else {
+          reset();
+
+          alert(userData?.message)
+        }
+       
       } else {
         throw new Error(response.statusText);
       }
     } catch (error) {
       console.error('Error logging in:', error);
-    } finally {
-      setLoading(false);
     }
   };
-console.log(loading)
+
   return (
 
       <MainContainer>

@@ -12,8 +12,6 @@ import {
 } from "../../styles/components/Sidebar";
 import {
   RiHome4Line,
-  RiHeart3Line,
-  RiCoupon3Line,
   RiSettings5Line,
 } from "react-icons/ri";
 import {
@@ -22,7 +20,7 @@ import {
   HiArrowNarrowLeft,
 } from "react-icons/hi";
 import { MdOutlineReport} from "react-icons/md";
-import { IoPersonCircleOutline, IoWalletOutline } from "react-icons/io5";
+import { IoPersonCircleOutline } from "react-icons/io5";
 
 
 const Sidebar= () => {

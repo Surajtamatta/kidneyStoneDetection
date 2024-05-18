@@ -71,7 +71,6 @@ const Login = () => {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
-        const data = await response.json();
         alert('successfully register');
         router.push('login');
 

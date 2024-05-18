@@ -23,10 +23,14 @@ UPLOAD_FOLDER = 'images'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
-
-
 CORS(app,resources={r"/api/*": {"origins": "http://localhost:3000"}})
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_FOLDER', '/usr/src/app/images')
+app.config['ALLOWED_EXTENSIONS'] = os.getenv('ALLOWED_EXTENSIONS', 'png,jpg,jpeg').split(',')
+DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///usr/src/app/database/database.db')
+
+
 
 
 def encoder(images):
@@ -35,6 +39,7 @@ def encoder(images):
     if img_base64 is None:
         raise ValueError("Failed to encode image")
     return img_base64
+
 def decoder(images):
     image_bytes = base64.b64decode(images)
     nparr = np.frombuffer(image_bytes, np.uint8)
@@ -42,6 +47,7 @@ def decoder(images):
     if img_decoded is None:
         raise ValueError("Failed to decode image")
     return img_decoded
+
 
 
 def preprocessImage(images):
@@ -73,46 +79,55 @@ def preprocessImage(images):
 
 
 
-def ensemble_predict(cnn_model, svm_model, decision_tree_model, X):
+def ensemble_predict(cnn_model, svm_model, decision_model, img):
     def cnn_function():
-        yhat = cnn_model.predict(np.expand_dims(X, 0))
+        yhat = cnn_model.predict(np.expand_dims(img, 0))
+        
+        if yhat is None:
+            raise ValueError("Failed to cnn_model to  predict")
         return np.argmax(yhat[0])
 
     def svm_function():
-        X_img = X.reshape(1, -1)
+        X_img = img.reshape(1, -1)
         yhat = svm_model.predict(X_img)
+        # score = svm_model.predict_proba(X_img)
+        # print("svm:",score)
+        if yhat is None:
+            raise  ValueError("Failed to svm_model to  predict")
         return yhat[0]
 
     def decision_function():
-        X_img = X.reshape(1, -1)
+        X_img = img.reshape(1, -1)
         yhat = decision_model.predict(X_img)
+        # score = svm_model.predict_proba(X_img)
+        # print("decision:",score)
+        if yhat is None:
+            raise  ValueError("Failed to decision_model to  predict")
         return yhat[0]
 
     cnn_pred = cnn_function()
     svm_pred = svm_function()
     dt_pred = decision_function()
-
     print(cnn_pred, svm_pred, dt_pred)
-
-    # Combine predictions
     ensemble_pred = max(set([cnn_pred, svm_pred, dt_pred]), key=[cnn_pred, svm_pred, dt_pred].count)
     return ensemble_pred
 
 
-def Classification(filename):
-    img_decoded = decoder(filename)
+
+def Classification(img):
+    img_decoded = decoder(img)
     img_rgb = cv2.cvtColor(img_decoded, cv2.COLOR_BGR2RGB)
     resized_img = cv2.resize(img_rgb, (256, 256))
     normalized_img = resized_img / 255.0
     class_labels = ['Cyst', 'Normal', 'Stone', 'Tumor']  
-    cnn_predict = cnn_model.predict(np.expand_dims(normalized_img, 0))
+    # cnn_predict = cnn_model.predict(np.expand_dims(normalized_img, 0))
     # svm_predict =svm_model.predict(normalized_img.reshape(1, -1))[0]
     # decision_predict =decision_model.predict(normalized_img.reshape(1, -1))[0]
-    predicted_class_index = np.argmax(cnn_predict[0])
-    
+    # predicted_class_index = np.argmax(cnn_predict[0])
     ensemble_prediction = ensemble_predict(cnn_model, svm_model, decision_model, normalized_img)
-
     predicted_label = class_labels[ensemble_prediction]
+    if predicted_label is None:
+        raise ValueError("Failed to encode image")
     return predicted_label
 
 def allowed_file(filename):
@@ -243,19 +258,17 @@ def login():
         password = data.get('password')
 
         try:
-            with sqlite3.connect('database.db') as con:
+            with sqlite3.connect('/usr/src/app/database/database.db') as con:
                 cur = con.cursor()
                 cur.execute("SELECT * FROM users WHERE email=?", (email,))
                 user_data = cur.fetchone()
 
-                if user_data and user_data[4] == password:  # Assuming password is at index 4
-                    # Remove the password from the user data before sending it to the client
+                if password==user_data[4]:  
                     user_data_without_password = {
                         'fullname': user_data[0],
                         'address': user_data[1],
                         'email': user_data[2],
                         'phone': user_data[3],
-                        # Include other user data fields here...
                     }
                     return jsonify({'success': True, 'message': 'Login successful', 'user_data': user_data_without_password})
                 else:
@@ -270,6 +283,10 @@ def login():
     
 
 
-if __name__=="__main__":
-    app.run(debug=True,port=8080)
+@app.route('/')
+def index():
+    return 'Server is running...'
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0',port=8080)
 

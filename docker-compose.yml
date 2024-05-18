@@ -1,26 +1,36 @@
+
 services:
+  next-app:
+    build:
+      context: ./client
+      dockerfile: next.Dockerfile
+    ports:
+      - "3000:3000"  
+ 
+    env_file:
+      - ./client/.env
+    environment:
+    - NEXT_PUBLIC_API_URL=http://localhost:8080
+    depends_on:
+      - flask-app
+
+
+  
+
   flask-app:
     build:
       context: ./server
-      dockerfile: flask.dockerfile
+      dockerfile: flask.Dockerfile
     ports:
       - "8080:8080"
     volumes:
       - ./server:/usr/src/app
+      - ./server/database:/usr/src/app/database  # Mount the database directory
     environment:
       FLASK_ENV: production
       UPLOAD_FOLDER: /usr/src/app/images
       ALLOWED_EXTENSIONS: png,jpg,jpeg
-      DATABASE_URI: sqlite:///database.db
+      DATABASE_URI: sqlite:///usr/src/app/database/database.db 
 
-  next-app:
-    build:
-      context: ./client
-      dockerfile: next.dockerfile
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./client:/usr/src/app
-    environment:
-      NODE_ENV: production
+  
 
