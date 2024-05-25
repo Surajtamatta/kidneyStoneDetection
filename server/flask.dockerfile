@@ -25,3 +25,6 @@ EXPOSE 8080
 
 # Command to run the application with Gunicorn
 CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8080", "app:app"]
+
+
+
