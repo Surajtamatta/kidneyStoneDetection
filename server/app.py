@@ -23,7 +23,12 @@ UPLOAD_FOLDER = 'images'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
-CORS(app,resources={r"/api/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={
+    r"/api/*": {
+        "origins": ["http://localhost:3000", "https://kidney-stone-detection-two.vercel.app"]
+    }
+})
+
 # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_FOLDER', '/usr/src/app/images')
