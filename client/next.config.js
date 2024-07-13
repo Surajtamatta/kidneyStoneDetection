@@ -5,7 +5,7 @@ const nextConfig = {
         return [
           {
             source: '/api/:path*',
-            destination: 'https://kidneystonedetection.streamlit.app/api/:path*', // Proxy to the desired host
+            destination: ['https://kidneystonedetection.streamlit.app/api/:path*','http://localhost:3000/api/:path*'], // Proxy to the desired host
           },
         ];
       },
