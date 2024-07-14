@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: next-app
+    env: node
+    plan: free
+    buildCommand: "cd client && docker build -t next-app -f next.Dockerfile ."
+    startCommand: "docker run -p 3000:3000 --env-file ./client/.env -e NEXT_PUBLIC_API_URL=http://localhost:8080 next-app"
+    envVars:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+    depends_on:
+      - flask-app
+
+  - type: web
+    name: flask-app
+    env: docker
+    plan: free
+    buildCommand: "cd server && docker build -t flask-app -f flask.Dockerfile ."
+    startCommand: "docker run -p 8080:8080 -v ./server:/usr/src/app -v ./server/database:/usr/src/app/database -e FLASK_ENV=production -e UPLOAD_FOLDER=/usr/src/app/images -e ALLOWED_EXTENSIONS=png,jpg,jpeg -e DATABASE_URI=sqlite:///usr/src/app/database/database.db flask-app"
+    envVars:
+      FLASK_ENV: production
+      UPLOAD_FOLDER: /usr/src/app/images
+      ALLOWED_EXTENSIONS: png,jpg,jpeg
+      DATABASE_URI: sqlite:///usr/src/app/database/database.db
